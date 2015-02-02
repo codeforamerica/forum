@@ -134,7 +134,8 @@ post '/forum/:username/:repo_name/:issue_number/comment' do
   authenticate!
   @repo_string = "#{params[:username]}/#{params[:repo_name]}"
   github_user.api.add_comment(@repo_string, params[:issue_number], params[:comment])
-  redirect "/forum/#{@repo_string}/#{params[:issue_number]}"
+  # redirect "/forum/#{@repo_string}/#{params[:issue_number]}"
+  return {"response" => "Comment posted"}.to_json
 end
 
 get '/forum/:username/:repo_name/:issue_number/comment/:comment_id/edit' do

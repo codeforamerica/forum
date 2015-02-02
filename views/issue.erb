@@ -56,30 +56,42 @@
 
   </ul>
 
-<% if authenticated? %>
-  <form action= "<%= request.url %>/comment" method="POST">
-    <textarea name="comment"></textarea>
-    <input type="submit" value="Add comment" class="icon-bubble" />
-    <small class="note"><a href="https://github.com/codeforamerica/codeofconduct">Don't be a jerk</a>.</small>
-  </form>
+  <% if authenticated? %>
+
+    <form id="new-comment" method="POST">
+      <textarea id="comment-field" name="comment"></textarea>
+      <input type="submit" value="Add comment" class="icon-bubble" />
+      <small class="note"><a href="https://github.com/codeforamerica/codeofconduct">Don't be a jerk</a>.</small>
+    </form>
+
 <% end %>
 
 </section>
 
 <script>
-function checkForNewComments(){
-    $.getJSON("http://localhost:4567/forum/<%= @repo_string %>/<%= @issue.number %>/updates?time=<%= @time %>", function(response){
 
-        $.each(response, function(i){
-            html = '<li><h6 class="inline"><a href='+response[i].html_url+'>'+response[i].login+'</a></h6>'+response[i].body+'</li>';
-            $("#comments").append(html);
-        })
+    $('#new-comment').on('submit', function (e) {
+        e.preventDefault();
+        url = "http://localhost:4567/forum/<%= @repo_string %>/<%= @issue.number %>/comment";
+        data = {"comment" : $("#comment-field").val() }
+        $.post(url, data);
+        $("#comment-field").empty();
+        setTimeout(checkForNewComments,3000);
+    });
 
-        setTimeout(checkForNewComments,30000);
+    function checkForNewComments(){
+        $.getJSON("http://localhost:4567/forum/<%= @repo_string %>/<%= @issue.number %>/updates?time=<%= @time %>", function(response){
 
-    })
+            $.each(response, function(i){
+                html = '<li><h6 class="inline"><a href='+response[i].html_url+'>'+response[i].login+'</a></h6>'+response[i].body+'</li>';
+                $("#comments").append(html);
+            })
 
-}
+            setTimeout(checkForNewComments,30000);
 
-setTimeout(checkForNewComments,30000);
+        });
+
+    }
+
+    setTimeout(checkForNewComments,30000);
 </script>
