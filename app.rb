@@ -2,6 +2,8 @@ require 'sinatra'
 require 'octokit'
 require 'sinatra_auth_github'
 require 'redcarpet'
+require 'json'
+require 'time'
 
 enable :sessions
 
@@ -82,7 +84,24 @@ get '/forum/:username/:repo_name/:issue_number' do
   @comments.each do |comment|
     comment.body = markdown.render(comment.body)
   end
+  @time = Time.now.httpdate
   erb :issue
+end
+
+get '/forum/:username/:repo_name/:issue_number/updates' do
+    client = which_github_client()
+    @repo_string = "#{params[:username]}/#{params[:repo_name]}"
+    @time = params["time"]
+    @new_comments = []
+    @comments = client.issue_comments(@repo_string, params[:issue_number], :since => @time)
+    @comments.each do |comment|
+        @new_comment = {}
+        @new_comment["login"] = comment.user.login
+        @new_comment["html_url"] = comment.user.html_url
+        @new_comment["body"] = markdown.render(comment.body)
+        @new_comments.push(@new_comment)
+    end
+    return @new_comments.to_json
 end
 
 get '/forum/:username/:repo_name/:issue_number/edit' do

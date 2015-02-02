@@ -32,7 +32,7 @@
 
   <hr />
 
-  <ul class="list-ruled">
+  <ul id="comments" class="list-ruled">
 
     <% @comments.each do |comment| %>
 
@@ -65,3 +65,21 @@
 <% end %>
 
 </section>
+
+<script>
+function checkForNewComments(){
+    $.getJSON("http://localhost:4567/forum/<%= @repo_string %>/<%= @issue.number %>/updates?time=<%= @time %>", function(response){
+
+        $.each(response, function(i){
+            html = '<li><h6 class="inline"><a href='+response[i].html_url+'>'+response[i].login+'</a></h6>'+response[i].body+'</li>';
+            $("#comments").append(html);
+        })
+
+        setTimeout(checkForNewComments,30000);
+
+    })
+
+}
+
+setTimeout(checkForNewComments,30000);
+</script>
