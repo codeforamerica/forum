@@ -1,0 +1,24 @@
+<section>
+  
+  <h3>Welcome to the forum!</h3>
+  <p>Here's a list of issues people need help with right now.</p>
+  <ul class="list-ruled">
+    <% @repos.each do |repo| %>
+
+    <li>
+      <h4><%= repo["title"] %></h4>
+      <p>
+        <%= repo["body"] %>
+      </p>
+
+      <h4>Project</h4>
+      <p>
+        <strong><%= repo["project"]["github_details"]["name"] %></strong>: <%= repo["project"]["description"] %>
+      </p>
+    </li>
+
+    <% end %>
+
+  </ul>
+
+</section>
