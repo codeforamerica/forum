@@ -42,7 +42,12 @@ get '/explore'
   data = JSON.parse(res.body)
   @repos = data["objects"]
   @repos.each do |repo|
-    repo["body"] = markdown.render(repo["body"])
+    if repo["body"]
+      repo["body"] = markdown.render(repo["body"])
+    else
+      repo["body"] = ""
+    end
+    repo["issue_number"] = repo["html_url"].split('/')[-1]
   end
   erb :front_page
 end
