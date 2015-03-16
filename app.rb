@@ -2,6 +2,8 @@ require 'sinatra'
 require 'octokit'
 require 'sinatra_auth_github'
 require 'redcarpet'
+require 'net/http'
+require 'json'
 
 enable :sessions
 
@@ -29,6 +31,25 @@ end
 
 get '/' do
   erb :welcome
+end
+
+get '/explore'
+  url = URI.parse('http://codeforamerica.org/api/issues/labels/help%20wanted')
+  req = Net::HTTP::Get.new(url.to_s)
+  res = Net::HTTP.start(url.host, url.port) {|http|
+    http.request(req)
+  }
+  data = JSON.parse(res.body)
+  @repos = data["objects"]
+  @repos.each do |repo|
+    if repo["body"]
+      repo["body"] = markdown.render(repo["body"])
+    else
+      repo["body"] = ""
+    end
+    repo["issue_number"] = repo["html_url"].split('/')[-1]
+  end
+  erb :front_page
 end
 
 get '/forum' do

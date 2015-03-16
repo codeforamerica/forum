@@ -27,7 +27,7 @@
     <% end %>
 
   <% end %>
-  
+
   <p><%= @issue.body %></p>
 
   <hr />
@@ -37,7 +37,7 @@
     <% @comments.each do |comment| %>
 
       <li>
-        
+
         <h6 class="inline"><a href="<%= comment.user.html_url %>"><%= comment.user.login %></a></h6>
         <% if authenticated? %>
 

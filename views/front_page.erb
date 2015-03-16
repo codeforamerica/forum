@@ -1,0 +1,34 @@
+<section>
+
+  <h3>Welcome to the forum!</h3>
+  <p class="lead">Here's a list of issues people need help with right now.</p>
+  <ul>
+    <% @repos.each do |repo| %>
+
+    <li>
+      <p>
+        <strong>
+          <%= repo["project"]["github_details"]["owner"]["login"] %>/<%= repo["project"]["github_details"]["name"] %>
+        </strong>
+          <% if repo["project"]["description"] %>
+          : <%= repo["project"]["description"] %>
+          <% end %>
+        </p>
+
+
+      <p><strong>
+        <a href="/forum/<%= repo['project']['github_details']['owner']['login'] %>/<%= repo['project']['github_details']['name'] %>/<%= repo['issue_number'] %>">
+        <%= repo["title"] %>
+        </a>
+      </strong></p>
+
+      <p><%= repo["body"] %></p>
+
+    </li>
+    <hr>
+
+    <% end %>
+
+  </ul>
+
+</section>
